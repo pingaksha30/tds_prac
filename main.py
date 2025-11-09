@@ -16,9 +16,9 @@ app.add_middleware(
 df = pd.read_json("data.json")
 
 @app.get("/query")
-def query(q: str = Query(...), response: Response = None):
+def query(response: Response, q: str = Query(...)):
     response.headers["X-Email"] = "23f2003519@ds.study.iitm.ac.in"
-    
+
     try:
         answer = handle_query(q)
         return {"answer": answer}
@@ -26,23 +26,21 @@ def query(q: str = Query(...), response: Response = None):
         return {"error": str(e)}
 
 
-def handle_query(q: str):
-    q = q.lower()
 
-    # Example question type: total sales
+def handle_query(q: str):
+    q = q.lower().strip()
+
+    # 1️⃣ Total sales query
     if "total sales of" in q:
         product = q.split("total sales of")[1].split("in")[0].strip().capitalize()
-        city = q.split("in")[1].split("?")[0].strip().title()
+        city = q.split("in")[1].replace("?", "").strip().title()
         data = df[(df["product"] == product) & (df["city"] == city)]
         return data["sales"].sum()
 
-    # Example question type: number of sales reps in region
+    # 2️⃣ Number of sales reps query
     if "how many sales reps" in q:
-        region = q.split("in")[1].split("?")[0].strip().title()
+        region = q.split("in")[1].replace("?", "").strip().title()
         data = df[df["region"] == region]
         return data["rep"].nunique()
 
-    # Add other question type handlers here...
-
     return "Question not supported yet"
-
