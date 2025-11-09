@@ -15,16 +15,18 @@ df = pd.read_json("data.json")
 
 @app.get("/query")
 def query(response: Response, q: str = Query(None)):
-    response.headers["X-Email"] = "23f2003519@ds.study.iitm.ac.in"
+    email = "23f2003519@ds.study.iitm.ac.in"
+    response.headers["X-Email"] = email
     
     if not q:
-        return {"answer": "Please provide a question using the 'q' parameter."}
+        return {"answer": "Please provide a question using the 'q' parameter.", "email": email}
     
     try:
         answer = handle_query(q)
-        return {"answer": answer}
+        return {"answer": answer, "email": email}
     except Exception as e:
-        return {"error": str(e)}
+        return {"error": str(e), "email": email}
+
 
 def handle_query(q: str):
     q = q.lower().strip()
