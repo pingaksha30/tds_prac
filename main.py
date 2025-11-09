@@ -35,12 +35,13 @@ def handle_query(q: str):
         product = q.split("total sales of")[1].split("in")[0].strip().capitalize()
         city = q.split("in")[1].replace("?", "").strip().title()
         data = df[(df["product"] == product) & (df["city"] == city)]
-        return data["sales"].sum()
+        return int(data["sales"].sum())
 
     # 2️⃣ Number of sales reps query
     if "how many sales reps" in q:
         region = q.split("in")[1].replace("?", "").strip().title()
         data = df[df["region"] == region]
-        return data["rep"].nunique()
+        return int(data["rep"].nunique())
 
     return "Question not supported yet"
+
