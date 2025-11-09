@@ -16,14 +16,19 @@ app.add_middleware(
 df = pd.read_json("data.json")
 
 @app.get("/query")
-def query(response: Response, q: str = Query(...)):
+def query(response: Response, q: str = Query(None)):
     response.headers["X-Email"] = "23f2003519@ds.study.iitm.ac.in"
-
+    
+    if q is None:
+        return {"answer": "Please provide a question using the 'q' parameter."}
+    
     try:
         answer = handle_query(q)
         return {"answer": answer}
     except Exception as e:
         return {"error": str(e)}
+
+
 
 
 
